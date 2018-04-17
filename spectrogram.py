@@ -16,7 +16,7 @@ def stereo_to_mono(audiodata):
 
     return np.array(newaudiodata, dtype='int16')
 
-def get_spectogram(filename):
+def get_spectrogram(filename):
     # sample_rate, samples = wavfile.read(filename)
     # samples = stereo_to_mono(samples)
     # wavfile.write('test_mono.wav', sample_rate, samples)
@@ -24,10 +24,10 @@ def get_spectogram(filename):
     num_frames = f.getnframes()
     sample_rate = f.getframerate()
     audio_data = np.fromstring(f.readframes(num_frames), dtype=np.int16) 
-    frequencies, times, spectogram = signal.spectrogram(audio_data, sample_rate)
+    frequencies, times, spectrogram = signal.spectrogram(audio_data, sample_rate)
 
-    plt.pcolormesh(times, frequencies, spectogram)
-    plt.imshow(spectogram)
+    plt.pcolormesh(times, frequencies, spectrogram)
+    plt.imshow(spectrogram)
     plt.ylabel('Frequency [Hz]')
     plt.xlabel('Time [sec]')
     plt.show()
@@ -35,4 +35,4 @@ def get_spectogram(filename):
 
 
 if __name__ == '__main__':
-    get_spectogram('test.au')
+    get_spectrogram('test.au')
