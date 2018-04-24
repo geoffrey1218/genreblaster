@@ -1,5 +1,5 @@
 # 129x150
-import Image
+from PIL import Image
 import os
 
 
@@ -34,7 +34,7 @@ def make_slices():
                         box = (j, i, j + width, i + height)
                         a = img.crop(box)
                         try:
-                            o = a.crop(box)
+                            o = a
                             strfile = file.rstrip(".au.png")
                             o.save(os.path.join(spectrogram_folder, strfile + "_" + str(j) + ".png"))
                         except Exception as e:
