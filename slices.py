@@ -9,7 +9,7 @@ def make_slices():
 
     cwd = os.getcwd()
     spectrogram_folder = os.path.join(cwd, 'spectrograms')
-    slices_folder = os.path.join(cwd, 'slices')
+    slices_folder = os.path.join(cwd, 'dataset_photos', 'slices')
     try:
         os.mkdir(slices_folder)
     except FileExistsError:
