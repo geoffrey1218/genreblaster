@@ -30,7 +30,7 @@ def make_slices():
                 img = Image.open(current_filepath)
                 imgwidth, imgheight = img.size
                 for i in range(0, imgheight, height):
-                    for j in range(0, imgwidth, width):
+                    for j in range(0, imgwidth-width, width):
                         box = (j, i, j + width, i + height)
                         a = img.crop(box)
                         try:
