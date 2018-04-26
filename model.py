@@ -50,14 +50,14 @@ def process_tfrecords():
     coord = tf.train.Coordinator()
     threads = tf.train.start_queue_runners(coord=coord)
 
-    for batch_index in range(5):
+    for batch_index in range(3):
       img, lbl = sess.run([images, labels])
       img = img.astype(np.uint8)
-      for j in range(6):
+      for j in range(10):
         tmp = img[j]
         tmp = tmp.reshape((129, 150))
-        plt.subplot(2, 3, j+1)
-        plt.imshow(tmp)
+        plt.subplot(2, 5, j+1)
+        plt.imshow(tmp, cmap = "gray")
         plt.title(lbl[j])
       plt.show()
       
