@@ -27,19 +27,12 @@ def process_tfrecords():
     record_features = tf.parse_single_example(serialized_example, features=features)
 
     # convert feature data
-    image = tf.decode_raw(record_features['image/encoded'], tf.float32)
+    image = tf.image.decode_png(record_features['image/encoded'], 1, tf.uint8)
     label = tf.cast(record_features['image/class/label'], tf.int32)
     height = tf.cast(record_features['image/height'], tf.int32)
     width = tf.cast(record_features['image/width'], tf.int32)
 
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    sess.run(init_op) 
-    height_val = height.eval() 
-    width_val = width.eval()
-    sess.close()
-
-    print(height_val, width_val)
-    image = tf.reshape(image, [150, 129, 3])
+    image = tf.reshape(image, [129, 150, 1])
 
     # create random batches
     images, labels = tf.train.shuffle_batch(

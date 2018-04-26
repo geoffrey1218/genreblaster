@@ -109,7 +109,7 @@ class ImageReader(object):
   def __init__(self):
     # Initializes function that decodes RGB PNG data.
     self._decode_png_data = tf.placeholder(dtype=tf.string)
-    self._decode_png = tf.image.decode_png(self._decode_png_data, channels=3)
+    self._decode_png = tf.image.decode_png(self._decode_png_data, channels=1)
 
   def read_image_dims(self, sess, image_data):
     image = self.decode_png(sess, image_data)
@@ -118,8 +118,9 @@ class ImageReader(object):
   def decode_png(self, sess, image_data):
     image = sess.run(self._decode_png,
                      feed_dict={self._decode_png_data: image_data})
+    print(image.shape)
     assert len(image.shape) == 3
-    assert image.shape[2] == 3
+    assert image.shape[2] == 1
     return image
 
 
