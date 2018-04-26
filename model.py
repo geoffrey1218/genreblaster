@@ -53,18 +53,20 @@ def process_tfrecords():
     for batch_index in range(5):
       img, lbl = sess.run([images, labels])
       img = img.astype(np.uint8)
-
       for j in range(6):
+        tmp = img[j]
+        tmp = tmp.reshape((129, 150))
         plt.subplot(2, 3, j+1)
-        plt.imshow(img[j, ...])
+        plt.imshow(tmp)
         plt.title(lbl[j])
+      plt.show()
       
-      # stop threads
-      coord.request_stop()
+    # stop threads
+    coord.request_stop()
 
-      # wait for threads to stop
-      coord.join(threads)
-      sess.close() 
+    # wait for threads to stop
+    coord.join(threads)
+    sess.close() 
 
 
 if __name__ == '__main__':
