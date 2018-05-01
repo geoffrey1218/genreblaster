@@ -32,7 +32,7 @@ def process_tfrecords():
     height = tf.cast(record_features['image/height'], tf.int32)
     width = tf.cast(record_features['image/width'], tf.int32)
 
-    image = tf.reshape(image, [129, 150, 1])
+    image = tf.reshape(image, [128, 128, 1])
 
     # create random batches
     images, labels = tf.train.shuffle_batch(
@@ -55,7 +55,7 @@ def process_tfrecords():
       img = img.astype(np.uint8)
       for j in range(10):
         tmp = img[j]
-        tmp = tmp.reshape((129, 150))
+        tmp = tmp.reshape((128, 128))
         plt.subplot(2, 5, j+1)
         plt.imshow(tmp, cmap = "gray")
         plt.title(lbl[j])
