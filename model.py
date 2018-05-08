@@ -86,6 +86,7 @@ def cnn_model_fn(features, labels, mode):
     return tf.estimator.EstimatorSpec(
         mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
+
 def decode(sample):
     features = {
         'image/encoded': tf.FixedLenFeature([], tf.string),
@@ -104,9 +105,11 @@ def decode(sample):
     image_resized = tf.reshape(image, [128, 128, 1])
     return image_resized, label
 
+
 def train_input_fn():
     BATCH_SIZE = 20
-    dataset = tf.data.TFRecordDataset('dataset_photos/genres_train_00000-of-00002.tfrecord')
+    dataset = tf.data.TFRecordDataset(
+        [f'dataset_photos/genres_train_0000{i}-of-00002.tfrecord' for i in range(2)])
     dataset = dataset.map(decode)
     dataset = dataset.batch(BATCH_SIZE)
     dataset = dataset.repeat()
@@ -115,9 +118,11 @@ def train_input_fn():
     features, labels = iterator.get_next()
     return features, labels
 
+
 def eval_input_fn():
     BATCH_SIZE = 20
-    dataset = tf.data.TFRecordDataset('dataset_photos/genres_validation_00000-of-00002.tfrecord')
+    dataset = tf.data.TFRecordDataset(
+        [f'dataset_photos/genres_validation_0000{i}-of-00002.tfrecord' for i in range(2)])
     dataset = dataset.map(decode)
     dataset = dataset.batch(BATCH_SIZE)
     dataset = dataset.repeat(1)
@@ -125,6 +130,7 @@ def eval_input_fn():
 
     features, labels = iterator.get_next()
     return features, labels
+
 
 def main():
     # Create the Estimator
@@ -139,12 +145,13 @@ def main():
     # Train the model
     genre_classifier.train(
         input_fn=train_input_fn,
-        steps=700,
+        max_steps=1500,
         hooks=[logging_hook])
 
     # Evaluate the model and print results
     eval_results = genre_classifier.evaluate(input_fn=eval_input_fn)
     print(eval_results)
+
 
 if __name__ == "__main__":
     main()
