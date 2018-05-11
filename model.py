@@ -109,7 +109,7 @@ def decode(sample):
 def train_input_fn():
     BATCH_SIZE = 20
     dataset = tf.data.TFRecordDataset(
-        [f'dataset_photos/genres_train_0000{i}-of-00002.tfrecord' for i in range(2)])
+        ['gs://genreblaster/tfrecords/genres_train_0000{}-of-00002.tfrecord'.format(i) for i in range(2)])
     dataset = dataset.map(decode)
     dataset = dataset.batch(BATCH_SIZE)
     dataset = dataset.repeat()
@@ -122,7 +122,7 @@ def train_input_fn():
 def eval_input_fn():
     BATCH_SIZE = 20
     dataset = tf.data.TFRecordDataset(
-        [f'dataset_photos/genres_validation_0000{i}-of-00002.tfrecord' for i in range(2)])
+        ['gs://genreblaster/tfrecords/genres_validation_0000{}-of-00002.tfrecord'.format(i) for i in range(2)])
     dataset = dataset.map(decode)
     dataset = dataset.batch(BATCH_SIZE)
     dataset = dataset.repeat(1)
@@ -135,7 +135,7 @@ def eval_input_fn():
 def main():
     # Create the Estimator
     genre_classifier = tf.estimator.Estimator(
-        model_fn=cnn_model_fn, model_dir="/tmp/genre_convnet_model")
+        model_fn=cnn_model_fn, model_dir="gs://genreblaster/genre_convnet_model")
 
     # Set up logging for predictions
     tensors_to_log = {"probabilities": "softmax_tensor"}
@@ -145,7 +145,7 @@ def main():
     # Train the model
     genre_classifier.train(
         input_fn=train_input_fn,
-        max_steps=1500,
+        max_steps=2000,
         hooks=[logging_hook])
 
     # Evaluate the model and print results
