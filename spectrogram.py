@@ -1,7 +1,7 @@
 import os
 
 def make_single_spectrogram(input_filepath, output_filepath):
-    os.system(f'sox {input_filepath} -n spectrogram -Y 200 -X 50 -m -r -o {output_filepath}')
+    os.system(f'sox "{input_filepath}" -n spectrogram -Y 200 -X 50 -m -r -o {output_filepath}')
 
 def make_spectrograms():
     cwd = os.getcwd()

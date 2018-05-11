@@ -107,3 +107,8 @@ venv.bak/
 /spectrograms
 /slices
 /dataset_photos
+
+# sound files
+*.au 
+*.mp3 
+*.wav
