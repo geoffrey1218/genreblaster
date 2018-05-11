@@ -2,11 +2,27 @@
 from PIL import Image
 import os
 
-
-def make_slices():
+def slice_image(filepath, filename, target_folder):
     height = 128
     width = 128
 
+    img = Image.open(filepath)
+    imgwidth, imgheight = img.size
+    slices = []
+    for j in range(0, imgwidth-width, width):
+        box = (j, 0, j + width, 0 + height)
+        a = img.crop(box)
+        try:
+            o = a
+            strfile = filename.rstrip(".png")
+            savepath = os.path.join(target_folder, strfile + "_" + str(j) + ".png")
+            o.save(savepath)
+            slices.append(savepath)
+        except Exception as e:
+            print(e)
+    return slices 
+
+def make_slices():
     cwd = os.getcwd()
     spectrogram_folder = os.path.join(cwd, 'spectrograms')
     slices_folder = os.path.join(cwd, 'dataset_photos', 'slices')
@@ -25,20 +41,8 @@ def make_slices():
                     pass
 
                 current_filepath = os.path.join(subdir, file)
-
-                # slice
-                img = Image.open(current_filepath)
-                imgwidth, imgheight = img.size
-                # for i in range(0, imgheight, height):
-                for j in range(0, imgwidth-width, width):
-                    box = (j, 0, j + width, 0 + height)
-                    a = img.crop(box)
-                    try:
-                        o = a
-                        strfile = file.rstrip(".au.png")
-                        o.save(os.path.join(spectrogram_folder, strfile + "_" + str(j) + ".png"))
-                    except Exception as e:
-                        print(e)
+                slice_image(current_filepath, file, spectrogram_folder)
+                
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 import os
 
+def make_single_spectrogram(input_filepath, output_filepath):
+    os.system(f'sox {input_filepath} -n spectrogram -Y 200 -X 50 -m -r -o {output_filepath}')
 
 def make_spectrograms():
     cwd = os.getcwd()
@@ -21,7 +23,7 @@ def make_spectrograms():
 
                 current_filepath = os.path.join(subdir, file)
                 spectrogram_output = os.path.join(genre_folder, f'{file}.png')
-                os.system(f'sox {current_filepath} -n spectrogram -Y 200 -X 50 -m -r -o {spectrogram_output}')
+                make_single_spectrogram(current_filepath, spectrogram_output)
 
 
 if __name__ == '__main__':
