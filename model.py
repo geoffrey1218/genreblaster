@@ -145,7 +145,7 @@ def main():
     # Train the model
     genre_classifier.train(
         input_fn=train_input_fn,
-        max_steps=2000,
+        max_steps=3000,
         hooks=[logging_hook])
 
     # Evaluate the model and print results
