@@ -55,6 +55,35 @@ def get_input_fn(filepaths):
         return features, labels
     return predict_input_fn
 
+def get_predictions_from_slices(slices, tmp_dir='/tmp'):
+    input_fn = get_input_fn(slices)
+    model_dir = os.path.join(tmp_dir, 'genre_convnet_model')
+    genre_classifier = tf.estimator.Estimator(
+        model_fn=cnn_model_fn, model_dir=model_dir)
+    predictions = genre_classifier.predict(input_fn=input_fn)
+    classes = [GENRES[p['classes']] if (p['probabilities'][p['classes']] > 0.5) else 'indeterminate' for p in predictions]
+    return classes
+
+def print_predicted_genre_and_breakdown(classes):
+    class_counts = Counter(classes)
+    most_common_genre, most_common_count  = class_counts.most_common(1)[0]
+    num_slices = len(classes)
+    if most_common_count > num_slices / 2: # one genre makes up more than 50%
+        print('Predicted genre:', most_common_genre.upper())
+    else:
+        print('Genre indeterminate')
+
+    print('Genre breakdown:')
+    for genre, count in class_counts.most_common():
+        print('\t{}: {}/{}'.format(genre, count, num_slices))
+    
+def predict_from_original_dataset(genre_name):
+    genre_dir = 'dataset_photos/slices/{}'.format(genre_name)
+    for subdir, dirs, files in os.walk(genre_dir):
+        slices = [os.path.join(subdir, f) for f in files]
+        predictions = get_predictions_from_slices(slices)
+        print_predicted_genre_and_breakdown(predictions)
+
 def main():
     tmp_dir = os.path.join(os.sep, 'tmp')
     filename = input('Enter the name of a sound file in the cwd: ')
@@ -71,31 +100,14 @@ def main():
     except FileExistsError:
         pass
     slices = slice_image(spectrogram_file, 'spectrogram.png', slice_dir)
-    input_fn = get_input_fn(slices)
 
     print('Running model...')
-    model_dir = os.path.join(tmp_dir, 'genre_convnet_model')
-    genre_classifier = tf.estimator.Estimator(
-        model_fn=cnn_model_fn, model_dir=model_dir)
-    predictions = genre_classifier.predict(input_fn=input_fn)
-    classes = [GENRES[p['classes']] if (p['probabilities'][p['classes']] > 0.5) else 'indeterminate' for p in predictions]
+    classes = get_predictions_from_slices(slices, tmp_dir)
 
     print('Cleaning up spectrogram and slices...')
     os.remove(spectrogram_file) 
     for s in slices:
         os.remove(s)
-
-    class_counts = Counter(classes)
-    most_common_genre, most_common_count  = class_counts.most_common(1)[0]
-    num_slices = len(classes)
-    if most_common_count > num_slices / 2: # one genre makes up more than 50%
-        print('Predicted genre:', most_common_genre.upper())
-    else:
-        print('Genre indeterminate')
-
-    print('Genre breakdown:')
-    for genre, count in class_counts.most_common():
-        print('\t{}: {}/{}'.format(genre, count, num_slices))
 
     timeline = ''
     for i, genre in enumerate(classes):
@@ -105,4 +117,5 @@ def main():
     print('Timeline:', timeline)
 
 if __name__ == '__main__':
-    main()
+    #main()
+        print(predictions)
