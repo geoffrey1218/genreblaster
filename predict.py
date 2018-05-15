@@ -109,6 +109,7 @@ def main():
     for s in slices:
         os.remove(s)
 
+    print_predicted_genre_and_breakdown(classes)
     timeline = ''
     for i, genre in enumerate(classes):
         if i % 10 == 0:
@@ -117,5 +118,4 @@ def main():
     print('Timeline:', timeline)
 
 if __name__ == '__main__':
-    #main()
-        print(predictions)
+    main()
